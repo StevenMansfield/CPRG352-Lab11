@@ -3,6 +3,8 @@ package services;
 import dataaccess.UserDB;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
+import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import models.User;
@@ -16,9 +18,6 @@ public class AccountService {
             User user = userDB.get(email);
             if (password.equals(user.getPassword())) {
                 Logger.getLogger(AccountService.class.getName()).log(Level.INFO, "Successful login by {0}", email);
-                
-//                GmailService.sendMail(email, "New login to Notes App", "User has logged in", false);
-                
 
                 String to = user.getEmail();
                 String subject = "Notes App Login";
@@ -38,4 +37,41 @@ public class AccountService {
         
         return null;
     }
+    
+    public User resetPassword(String email, String path, String url) throws Exception {
+        UserDB userDB = new UserDB();
+        
+        User user = userDB.get(email);
+
+        String to = user.getEmail();
+        String subject = "NotesKeepr Password";
+        String template = path + "/emailtemplates/resetpassword.html";
+        String uuid = UUID.randomUUID().toString();
+        user.setResetPasswordUuid(uuid);
+        userDB.update(user);
+        String link = url + "?uuid=" + uuid; 
+
+        HashMap<String, String> tags = new HashMap<>();
+        tags.put("firstname", user.getFirstName());
+        tags.put("lastname", user.getLastName());
+        tags.put("link", link);
+
+        GmailService.sendMail(to, subject, template, tags);
+        
+        return user;
+    }
+    
+    public boolean changePassword(String uuid, String password) {
+       UserDB userDB = new UserDB();
+        try {
+            User user = userDB.getByUUID(uuid);
+            user.setPassword(password);
+            user.setResetPasswordUuid(null);
+            userDB.update(user);
+            return true;
+        } catch (Exception ex) {
+            return false;
+        }
+    }
+
 }

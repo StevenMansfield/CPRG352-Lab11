@@ -5,19 +5,18 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>Reset Password</title>
+        <title>New Password</title>
     </head>
     <body>
-        <h1>Reset Password</h1>
-        <div>Please enter your email address to reset your password. </div><br>
+        <h1>Enter a new password</h1>
         <form method="POST" action="">
             <div>
-                <label>Email Address: </label>
-                <input type="email" name="email">
+                <label>New Password: </label>
+                <input type="password" name="password">
             </div>
             <div>
-                <input type="submit" value="Submit" id="reset">
-                <input type="hidden" name="action" value="reset">
+                <input type="submit" value="Submit" id="newpassword">
+                <input type="hidden" name="action" value="newpassword">
             </div>
         </form>
     </body>
